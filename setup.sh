@@ -233,12 +233,12 @@ else
     [ -f "${EXT_CUSTOM}" ] && cp "${EXT_CUSTOM}" "${EXT_CUSTOM}.bak.$(date +%s)"
     cat >> "${EXT_CUSTOM}" << EXT_EOF
 
-; === Soshosai Phone: モバイル内線ルール ===
+; === Soshosai Phone: モバイル内線ルール(1000-1999 ワイルドカード) ===
 [from-internal-custom]
-; exten => 1001,1,Dial(PJSIP/flexisip-trunk/sip:1001@${SIP_DOMAIN},60)
-;  same => n,Hangup()
+exten => _1XXX,1,Dial(PJSIP/flexisip-trunk/sip:\${EXTEN}@${SIP_DOMAIN},60)
+ same => n,Hangup()
 EXT_EOF
-    echo "  テンプレート追加完了"
+    echo "  ワイルドカードルール追加完了"
 fi
 
 if command -v fwconsole &>/dev/null; then
@@ -265,10 +265,8 @@ echo "==========================================="
 echo " 完了"
 echo "==========================================="
 echo ""
-echo "内線追加:"
-echo "  extensions_custom.conf に追加:"
-echo "  exten => <EXT>,1,Dial(PJSIP/flexisip-trunk/sip:<EXT>@${SIP_DOMAIN},60)"
-echo "   same => n,Hangup()"
+echo "内線: 1000-1999 はワイルドカードで自動ルーティング済み"
+echo "管理画面: https://soshosai-phone-provision.shakenokirimi12.workers.dev/admin"
 echo ""
 echo "確認:"
 echo "  redis-cli keys 'fs:*'                    # 登録データ"
